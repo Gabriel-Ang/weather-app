@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+
+.weather-content{
+    margin : 0;
+    padding: 3rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.weather-input{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.weather-data{
+    width: 100%;
+}
