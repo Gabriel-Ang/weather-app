@@ -40,7 +40,6 @@ export class WeatherComponent implements OnInit{
   getData(){
     this.dataService.fetchWeatherData(1.3477394782902952, 103.74652122700614, 'metric', 'eng');
     this.data.set(this.dataService.data()[0]);
-    console.log('hello');
   }
 
   toggleDivider(){

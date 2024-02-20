@@ -20,5 +20,5 @@ import { WeatherComponent } from '../../components/weather/weather.component';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  constructor(private http : HttpClient) {}
+  constructor() {}
 }
