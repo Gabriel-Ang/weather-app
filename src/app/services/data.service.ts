@@ -64,33 +64,33 @@ export class DataService {
   data = signal<weatherData[]>([]);
 
   // extracted data
-  weather_id = signal<number>(0);
+  weather_id = signal<number | undefined>(undefined);
   weather_main = signal<string>('');
   weather_desc = signal<string>('');
   weather_icon = signal<string>('');
-  temp = signal<number>(0);
-  feels_like = signal<number>(0);
-  temp_min = signal<number>(0);
-  temp_max = signal<number>(0);
-  pressure = signal<number>(0);
-  humidity = signal<number>(0);
-  visibility = signal<number>(0);
-  wind_speed = signal<number>(0);
-  wind_deg = signal<number>(0);
-  cloud = signal<number>(0);
+  temp = signal<number | undefined>(undefined);
+  feels_like = signal<number | undefined>(undefined);
+  temp_min = signal<number | undefined>(undefined);
+  temp_max = signal<number | undefined>(undefined);
+  pressure = signal<number | undefined>(undefined);
+  humidity = signal<number | undefined>(undefined);
+  visibility = signal<number | undefined>(undefined);
+  wind_speed = signal<number | undefined>(undefined);
+  wind_deg = signal<number | undefined>(undefined);
+  rain = signal<number | undefined>(undefined);
+  clouds = signal<number | undefined>(undefined);
   dt_time = signal<string>(''); // unix converted to time
-  sys_type = signal<number>(0);
-  sys_id = signal<number>(0);
+  sys_type = signal<number | undefined>(undefined);
+  sys_id = signal<number | undefined>(undefined);
   sys_country = signal<string>('');
   sunrise_time = signal<string>(''); // unix converted to time
   sunset_time = signal<string>(''); // unix converted to time
-  timezone = signal<number>(0)
-  id = signal<number>(0)
+  timezone = signal<number | undefined>(undefined)
+  id = signal<number | undefined>(undefined);
   name = signal<string>('');
 
-
   // fetch weather data, units: standard, metric, imperial
-  async fetchWeatherData(lat : number, lon : number, units : string, lang : string){
+  fetchWeatherData(lat : number, lon : number, units : string, lang : string){
     return new Promise((resolve, reject) => {
       try{
         this.http.get(`${api}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
@@ -106,7 +106,7 @@ export class DataService {
     })
   }
 
-  async extractData(){
+  extractData(){
     this.dt_time.set(this.convertUnix(this.data()[0].dt))
     console.log('converted dt time: ', this.dt_time());
     this.sunrise_time.set(this.convertUnix(this.data()[0].sys.sunrise));
@@ -139,7 +139,16 @@ export class DataService {
     console.log(this.wind_speed());
     this.wind_deg.set(this.data()[0].wind.deg);
     console.log(this.wind_deg());
-    
+    this.rain.set(this.data()[0].rain?.['1h']);
+    console.log(this.rain());
+    this.clouds.set(this.data()[0].clouds.all);
+    console.log(this.clouds());
+    this.sys_type.set(this.data()[0].sys.type);
+    console.log(this.sys_type());
+    this.sys_id.set(this.data()[0].sys.type);
+    console.log(this.sys_id());
+    this.sys_country.set(this.data()[0].sys.country);
+    console.log(this.sys_country());
   }
 
   // convert unix to time

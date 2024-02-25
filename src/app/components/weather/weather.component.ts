@@ -2,6 +2,7 @@ import { Component, OnInit, computed } from '@angular/core';
 import { inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
 
 // services
 import { DataService, weatherData } from '../../services/data.service';
@@ -10,6 +11,15 @@ import { DataService, weatherData } from '../../services/data.service';
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+
+// rxjs
+import { interval } from 'rxjs';
+
+interface Language{
+  name: string,
+  code: string
+}
 
 @Component({
   selector: 'app-weather',
@@ -19,6 +29,8 @@ import { InputTextModule } from 'primeng/inputtext';
     DividerModule,
     ButtonModule,
     InputTextModule,
+    DropdownModule,
+    FormsModule,
   ],
   templateUrl: './weather.component.html',
   styleUrl: './weather.component.scss'
@@ -31,10 +43,21 @@ export class WeatherComponent implements OnInit{
   data = signal<weatherData|null>(null);
   dividerFlag = signal<boolean>(false);
   dividerIcon = signal<string>('pi pi-angle-down');
-  // time = this.dataService.time();
+  timeNow = signal<any>('');
+  langList : Language[] = [];
+  selectedLang : Language = {name: 'English', code: 'EN'};
 
   ngOnInit() {
     this.getData();
+    this.getTimeNow();
+    this.langList = [
+      {name: 'English', code: 'EN'},
+      {name: 'Chinese Simplified', code: 'CN'},
+      {name: 'French', code: 'FR'},
+      {name: 'Japanese', code: 'JP'},
+      {name: 'Korean', code: 'KR'},
+      {name: 'Spanish', code: 'ES'},
+    ]
   }
 
   getData(){
@@ -44,12 +67,22 @@ export class WeatherComponent implements OnInit{
 
   toggleDivider(){
     this.dividerFlag.set(!this.dividerFlag());
-
     if(this.dividerIcon() === 'pi pi-angle-down'){
       this.dividerIcon.set('pi pi-angle-up');
     }else{
       this.dividerIcon.set('pi pi-angle-down');
     }
+  }
+
+  // rxjs interval to show live time
+  getTimeNow(){
+    let intervalObservable : any = interval(1000);
+    intervalObservable.subscribe((int : any) => {
+      const dateNow = Date.now();
+      const today = new Date(dateNow);
+      today.toDateString();
+      this.timeNow.set(today);
+    })
   }
 
   // stopBubbling(event : Event, op : any){

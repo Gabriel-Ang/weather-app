@@ -1,53 +1,61 @@
 <div class="weather-container">
   <div class="weather-content">
-    <div class="weather-input">
-      <span class="p-float-label p-input-icon-right">
-        <i class="pi pi-search"></i>
-        <input pInputText type="text" class="p-inputtext-lg" #country />
-        
-        <label for="country">Country</label>
-      </span>
+
+    <div class="weather-header">
+      <div class="weather-input">
+        <span class="p-float-label p-input-icon-right">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" class="" #country />
+          <label for="country">Country</label>
+        </span>
+      </div>
+      <div class="weather-lang">
+        <p-dropdown class="lang-dropdown" [options]="langList" [(ngModel)]="selectedLang" optionLabel="code" [showClear]="false" placeholder="English" [tooltip]="selectedLang.name" tooltipPosition="bottom" ></p-dropdown>
+      </div>
     </div>
-
-    <div class="weather-data">
-      <p-divider align="center" type="solid">
-        <b>divider 1</b>
-      </p-divider>
-
-      <p class="m-0">
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui
-        blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-        et quas molestias excepturi sint occaecati cupiditate non provident,
-        similique sunt in culpa qui officia deserunt mollitia animi, id est
-        laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
-        distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
-        cumque nihil impedit quo minus.
-
-        <br>
-
-        Last Updated: {{ this.dataService.dt_time() }}
-      </p>
-
-      <p-divider
-        align="center"
-        type="solid"
-        (click)="toggleDivider()"
-        class="divider-toggle-container"
-      >
-        <i [class]="dividerIcon()"></i>
-      </p-divider>
-
-      @if(this.dividerFlag()){
-      <p class="m-0">
-        Temporibus autem quibusdam et aut officiis debitis aut rerum
-        necessitatibus saepe eveniet ut et voluptates repudiandae sint et
-        molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-        delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-        perferendis doloribus asperiores repellat. Donec vel volutpat ipsum.
-        Integer nunc magna, posuere ut tincidunt eget, egestas vitae sapien.
-        Morbi dapibus luctus odio.
-      </p>
-      }
+    
+    <div class="weather-body">
+      <div class="weather-data">
+        <p-divider align="center" type="solid">
+          <b>divider 1</b>
+        </p-divider>
+  
+        <p class="m-0">
+          At vero eos et accusamus et iusto odio dignissimos ducimus qui
+          blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+          et quas molestias excepturi sint occaecati cupiditate non provident,
+          similique sunt in culpa qui officia deserunt mollitia animi, id est
+          laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+          distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+          cumque nihil impedit quo minus.
+          <br>
+          Last Updated: {{ this.dataService.dt_time() }}
+          <br>
+          Time Now: {{ timeNow() }}
+          <br>
+          Language: {{ selectedLang.name }}
+        </p>
+  
+        <p-divider
+          align="center"
+          type="solid"
+          (click)="toggleDivider()"
+          class="divider-toggle-container">
+          <i [class]="dividerIcon()"></i>
+        </p-divider>
+  
+        @if(this.dividerFlag()){
+        <p class="m-0">
+          Temporibus autem quibusdam et aut officiis debitis aut rerum
+          necessitatibus saepe eveniet ut et voluptates repudiandae sint et
+          molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
+          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
+          perferendis doloribus asperiores repellat. Donec vel volutpat ipsum.
+          Integer nunc magna, posuere ut tincidunt eget, egestas vitae sapien.
+          Morbi dapibus luctus odio.
+        </p>
+        }
+      </div>
     </div>
   </div>
 </div>

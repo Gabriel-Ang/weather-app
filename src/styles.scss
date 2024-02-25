@@ -3,16 +3,27 @@
 
 .weather-content{
     margin : 0;
-    padding: 3rem;
+    padding: 2rem;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
 }
 .weather-input{
     width: 100%;
-    display: flex;
-    justify-content: center;
+    margin: 0 1rem 0 0;
+    border-radius: 30px;
+}
+.weather-header{
+    display: inline-flex;
+    margin: 0 0 0 auto;
 }
 .weather-data{
     width: 100%;
 }
+// lang dropdown
+.weather-lang .p-dropdown{
+    width: 7rem;
+    border-radius: 30px;
+}
+// lang dropdown text
+.weather-lang .p-element.p-dropdown-label.p-inputtext.ng-star-inserted{}
