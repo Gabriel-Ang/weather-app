@@ -1,12 +1,18 @@
+<div class="card flex justify-content-center gap-2">
+  <p-toast position="top-left" [life]="1000"></p-toast>
+</div>
+
 <div class="weather-container">
   <div class="weather-content">
-
     <div class="weather-header">
+      <div class="time-display">
+        {{ timeNow() }}
+      </div>
       <div class="weather-input">
         <span class="p-float-label p-input-icon-right">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" class="" #country />
-          <label for="country">Country</label>
+          <input pInputText type="text" class="weather-input-text" [(ngModel)]="inputText" (keydown.enter)="inputTextEnter()"/>
+          <label for="country">Search City or Postcode</label>
         </span>
       </div>
       <div class="weather-lang">
@@ -16,7 +22,10 @@
     
     <div class="weather-body">
       <div class="weather-data">
-        <p-divider align="center" type="solid">
+        <p-divider 
+        align="center" 
+        type="solid"
+        >
           <b>divider 1</b>
         </p-divider>
   
@@ -31,16 +40,19 @@
           <br>
           Last Updated: {{ this.dataService.dt_time() }}
           <br>
-          Time Now: {{ timeNow() }}
-          <br>
           Language: {{ selectedLang.name }}
+          <br>
+          City/Postcode Input : {{ inputText }}
+          <br>
+           data: {{ data()|json }}
         </p>
   
         <p-divider
           align="center"
           type="solid"
           (click)="toggleDivider()"
-          class="divider-toggle-container">
+          class="divider-toggle-container"
+        >
           <i [class]="dividerIcon()"></i>
         </p-divider>
   

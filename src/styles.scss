@@ -10,20 +10,30 @@
 }
 .weather-input{
     width: 100%;
-    margin: 0 1rem 0 0;
+    margin: 0 0 0 calc(100% - 480px);
+    position: absolute;
     border-radius: 30px;
 }
 .weather-header{
     display: inline-flex;
-    margin: 0 0 0 auto;
+    flex-wrap: nowrap;
+    margin: 0 0 0 0;
+    padding: 10px;
 }
 .weather-data{
     width: 100%;
 }
-// lang dropdown
-.weather-lang .p-dropdown{
-    width: 7rem;
-    border-radius: 30px;
+.weather-lang {
+    margin: 0 0 0 calc(100% - 190px);
+    position: absolute;
+    .p-dropdown {
+        width: 7rem;
+        border-radius: 30px;
+    }
 }
-// lang dropdown text
-.weather-lang .p-element.p-dropdown-label.p-inputtext.ng-star-inserted{}
+.weather-input-text{
+    border-radius: 50px;
+}
+.time-display {
+    padding: 11px 0 0 0;
+}

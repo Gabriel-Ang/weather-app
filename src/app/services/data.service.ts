@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { MessageService } from 'primeng/api';
 
 const api = environment.weatherApi;
 const apiKey = environment.apiKey;
@@ -58,10 +59,10 @@ export interface weatherData{
 })
 
 export class DataService {
-  constructor(private http : HttpClient) { }
+  constructor(private http : HttpClient, private msgService: MessageService) { }
 
   // raw data (json)
-  data = signal<weatherData[]>([]);
+  data = signal<weatherData[] | undefined>(undefined);
 
   // extracted data
   weather_id = signal<number | undefined>(undefined);
@@ -99,56 +100,37 @@ export class DataService {
           console.log(this.data());
           this.extractData();
           resolve(dataIn);
+          this.msgService.add({severity:'success', summary:'Success', detail:'Data Successfully Retrieved'});
         })
       }catch(error){
         reject(error);
+        this.msgService.add({severity:'warn', summary:'Error', detail:'Error Retrieving Data'});
       }
     })
   }
 
   extractData(){
-    this.dt_time.set(this.convertUnix(this.data()[0].dt))
-    console.log('converted dt time: ', this.dt_time());
-    this.sunrise_time.set(this.convertUnix(this.data()[0].sys.sunrise));
-    console.log('converted sunrise time: ', this.sunrise_time());
-    this.sunset_time.set(this.convertUnix(this.data()[0].sys.sunset));
-    console.log('converted sunset time: ', this.sunset_time());
-    this.weather_id.set(this.data()[0].weather[0].id);
-    console.log(this.weather_id());
-    this.weather_main.set(this.data()[0].weather[0].main);
-    console.log(this.weather_main());
-    this.weather_desc.set(this.data()[0].weather[0].description);
-    console.log(this.weather_desc());
-    this.weather_icon.set(this.data()[0].weather[0].icon);
-    console.log(this.weather_icon());
-    this.temp.set(this.data()[0].main.temp);
-    console.log(this.temp());
-    this.feels_like.set(this.data()[0].main.feels_like);
-    console.log(this.feels_like());
-    this.temp_min.set(this.data()[0].main.temp_min);
-    console.log(this.temp_min());
-    this.temp_max.set(this.data()[0].main.temp_max);
-    console.log(this.temp_max());
-    this.pressure.set(this.data()[0].main.pressure);
-    console.log(this.pressure());
-    this.humidity.set(this.data()[0].main.humidity);
-    console.log(this.humidity());
-    this.visibility.set(this.data()[0].visibility);
-    console.log(this.visibility());
-    this.wind_speed.set(this.data()[0].wind.speed);
-    console.log(this.wind_speed());
-    this.wind_deg.set(this.data()[0].wind.deg);
-    console.log(this.wind_deg());
-    this.rain.set(this.data()[0].rain?.['1h']);
-    console.log(this.rain());
-    this.clouds.set(this.data()[0].clouds.all);
-    console.log(this.clouds());
-    this.sys_type.set(this.data()[0].sys.type);
-    console.log(this.sys_type());
-    this.sys_id.set(this.data()[0].sys.type);
-    console.log(this.sys_id());
-    this.sys_country.set(this.data()[0].sys.country);
-    console.log(this.sys_country());
+    this.dt_time.set(this.convertUnix(this.data()![0].dt))
+    this.sunrise_time.set(this.convertUnix(this.data()![0].sys.sunrise));
+    this.sunset_time.set(this.convertUnix(this.data()![0].sys.sunset));
+    this.weather_id.set(this.data()![0].weather[0].id);
+    this.weather_main.set(this.data()![0].weather[0].main);
+    this.weather_desc.set(this.data()![0].weather[0].description);
+    this.weather_icon.set(this.data()![0].weather[0].icon);
+    this.temp.set(this.data()![0].main.temp);
+    this.feels_like.set(this.data()![0].main.feels_like);
+    this.temp_min.set(this.data()![0].main.temp_min);
+    this.temp_max.set(this.data()![0].main.temp_max);
+    this.pressure.set(this.data()![0].main.pressure);
+    this.humidity.set(this.data()![0].main.humidity);
+    this.visibility.set(this.data()![0].visibility);
+    this.wind_speed.set(this.data()![0].wind.speed);
+    this.wind_deg.set(this.data()![0].wind.deg);
+    this.rain.set(this.data()![0].rain?.['1h']);
+    this.clouds.set(this.data()![0].clouds.all);
+    this.sys_type.set(this.data()![0].sys.type);
+    this.sys_id.set(this.data()![0].sys.type);
+    this.sys_country.set(this.data()![0].sys.country);
   }
 
   // convert unix to time
