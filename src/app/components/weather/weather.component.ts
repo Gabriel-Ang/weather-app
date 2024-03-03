@@ -68,17 +68,17 @@ export class WeatherComponent implements OnInit {
     // pipe input text value, in case it is coordinate or country/city?
     // take piped input text value and plug it into api call
     // add langlist to api call as well if selectedLang.code !== 'EN'
-    console.log(this.inputText);
+    this.dataService.fetchDirectGeocode(this.inputText.toLowerCase(), this.selectedLang.code.toLowerCase());
     this.getData();
   }
 
   getData() {
-    this.dataService.fetchWeatherData(
-      1.3477394782902952,
-      103.74652122700614,
-      'metric',
-      'eng'
-    );
+    // this.dataService.fetchWeatherData(
+    //   1.3477394782902952,
+    //   103.74652122700614,
+    //   'metric',
+    //   'eng'
+    // );
   }
 
   toggleDivider() {

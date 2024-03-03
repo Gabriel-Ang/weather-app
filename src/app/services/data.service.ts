@@ -3,55 +3,66 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MessageService } from 'primeng/api';
 
-const api = environment.weatherApi;
+const weatherApi = environment.weatherApi;
 const apiKey = environment.apiKey;
+const directGeocodingApi = environment.directGeocodingApi;
+const reverseGeocodingApi = environment.reverseGeocodingApi;
 
-export interface weatherData{
-  coord : {
-    lon : number,
-    lat : number
+export interface weatherData {
+  coord: {
+    lon: number,
+    lat: number
   },
-  weather : [{
-    id : number,
-    main : string,
-    description : string,
-    icon : string
+  weather: [{
+    id: number,
+    main: string,
+    description: string,
+    icon: string
   }],
-  base : string,
-  main : {
-    temp : number,
-    feels_like : number,
-    temp_min : number,
-    temp_max : number,
-    pressure : number,
-    humidity : number,
-    sea_level : number,
-    grnd_level : number,
+  base: string,
+  main: {
+    temp: number,
+    feels_like: number,
+    temp_min: number,
+    temp_max: number,
+    pressure: number,
+    humidity: number,
+    sea_level: number,
+    grnd_level: number,
   },
-  visibility : number,
-  wind : {
-    speed : number,
-    deg : number,
-    gust : number
+  visibility: number,
+  wind: {
+    speed: number,
+    deg: number,
+    gust: number
   },
-  rain? : {
-    '1h' : number
+  rain?: {
+    '1h': number
   },
-  clouds : {
-    all : number
+  clouds: {
+    all: number
   },
-  dt : number,
-  sys : {
-    type : number,
-    id : number,
-    country : string,
-    sunrise : number,
-    sunset : number
+  dt: number,
+  sys: {
+    type: number,
+    id: number,
+    country: string,
+    sunrise: number,
+    sunset: number
   },
-  timezone : number,
-  id : number,
-  name : string,
-  cod : number
+  timezone: number,
+  id: number,
+  name: string,
+  cod: number
+};
+
+export interface directGeocodeObj {
+  name: string;
+  local_name?: string;
+  lat: number,
+  lon: number,
+  country: string,
+  state: string
 }
 
 @Injectable({
@@ -59,10 +70,11 @@ export interface weatherData{
 })
 
 export class DataService {
-  constructor(private http : HttpClient, private msgService: MessageService) { }
+  constructor(private http: HttpClient, private msgService: MessageService) { }
 
   // raw data (json)
   data = signal<weatherData[] | undefined>(undefined);
+  directGeocodeList = signal<directGeocodeObj[]>([]);
 
   // extracted data
   weather_id = signal<number | undefined>(undefined);
@@ -90,26 +102,7 @@ export class DataService {
   id = signal<number | undefined>(undefined);
   name = signal<string>('');
 
-  // fetch weather data, units: standard, metric, imperial
-  fetchWeatherData(lat : number, lon : number, units : string, lang : string){
-    return new Promise((resolve, reject) => {
-      try{
-        this.http.get(`${api}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
-        .subscribe((dataIn : any) => {
-          this.data.set([dataIn]);
-          console.log(this.data());
-          this.extractData();
-          resolve(dataIn);
-          this.msgService.add({severity:'success', summary:'Success', detail:'Data Successfully Retrieved'});
-        })
-      }catch(error){
-        reject(error);
-        this.msgService.add({severity:'warn', summary:'Error', detail:'Error Retrieving Data'});
-      }
-    })
-  }
-
-  extractData(){
+  extractData() {
     this.dt_time.set(this.convertUnix(this.data()![0].dt))
     this.sunrise_time.set(this.convertUnix(this.data()![0].sys.sunrise));
     this.sunset_time.set(this.convertUnix(this.data()![0].sys.sunset));
@@ -134,9 +127,82 @@ export class DataService {
   }
 
   // convert unix to time
-  convertUnix(unix : number) : string{
+  convertUnix(unix: number): string {
     let date = new Date(unix * 1000);
     let res = date.toUTCString();
     return res;
   }
+
+  // fetch weather data, units: standard, metric, imperial
+  fetchWeatherData(lat: number, lon: number, units: string, lang: string) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.http.get(`${weatherApi}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
+          .subscribe((dataIn: any) => {
+            this.data.set([dataIn]);
+            console.log(this.data());
+            this.extractData();
+            resolve(dataIn);
+            this.msgService.add({ severity: 'success', summary: 'Success', detail: 'Data Successfully Retrieved' });
+          })
+      } catch (error) {
+        reject(error);
+        this.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Data' });
+      }
+    })
+  };
+
+  // city only
+  fetchDirectGeocode(cityName?: string, langCode?: string) {
+    const _self = this;
+    this.http.get(`${directGeocodingApi}${cityName}&limit=5&appid=${apiKey}`)
+      .subscribe({
+        next(dataIn: any) {
+          _self.directGeocodeList.set([]);
+          console.log('Location Data Successfully Retrieved', dataIn);
+          _self.msgService.add({ severity: 'success', summary: 'Success', detail: 'Successfully Retrieved Direct Geocode' });
+          dataIn.map((obj: any) => {
+            const lang_code : string = langCode!;
+            if(obj.local_names){
+              const res : directGeocodeObj = {
+                name: obj.name,
+                local_name: obj.local_names[lang_code],
+                lat: obj.lat,
+                lon: obj.lon,
+                country: obj.country,
+                state: obj.state,
+              };
+              _self.directGeocodeList.update(list => [...list, res]);
+            }else{
+              const res : directGeocodeObj = {
+                name: obj.name,
+                lat: obj.lat,
+                lon: obj.lon,
+                country: obj.country,
+                state: obj.state,
+              };
+              _self.directGeocodeList.update(list => [...list, res]);
+            }
+          });
+          console.log(_self.directGeocodeList());
+        }, error(err: any) {
+          console.log('Error retrieving location', err);
+          _self.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Direct Geocode' });
+        },
+      })
+  };
+
+  fetchReverseGeocode(lat: string, lon: string) {
+    const _self = this;
+    this.http.get(`${reverseGeocodingApi}lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`)
+      .subscribe({
+        next(dataIn: any) {
+          console.log('Location Data Successfully Retrieved', dataIn);
+          _self.msgService.add({ severity: 'success', summary: 'Success', detail: 'Data Successfully Retrieved' });
+        }, error(err) {
+          console.log('Error retrieving location', err);
+          _self.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Location Data' });
+        },
+      })
+  };
 }
