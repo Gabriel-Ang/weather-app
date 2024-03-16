@@ -30,13 +30,6 @@
         </p-divider>
   
         <p class="m-0">
-          At vero eos et accusamus et iusto odio dignissimos ducimus qui
-          blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-          et quas molestias excepturi sint occaecati cupiditate non provident,
-          similique sunt in culpa qui officia deserunt mollitia animi, id est
-          laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
-          distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
-          cumque nihil impedit quo minus.
           <br>
           Last Updated: {{ this.dataService.dt_time() }}
           <br>
@@ -45,7 +38,34 @@
           City/Postcode Input : {{ inputText }}
           <br>
            data: {{ data()|json }}
+           <br>
+           citiesList : {{citiesList()|json}}
+           <br>
+           listboxvisible : {{ listboxVisible }}
+           <br>
+           selectedCity : {{ selectedCity|json}}
         </p>
+
+        @if(listboxVisible){
+          <div class="card flex justify-content-center">
+            <p-listbox
+            [options]="citiesList()"
+            [(ngModel)] = "selectedCity"
+            optionLabel="name"
+            [style]="{'width':'10rem'}" 
+            [listStyle]="{'max-height': '220px'}"
+            ></p-listbox>
+          </div>
+          <button 
+          pButton 
+          pRipple 
+          label="Submit" 
+          class="p-button-success" 
+          (click)="handleListBoxSubmit()"
+          [disabled]="!this.selectedCity">
+          </button>
+        }
+        
   
         <p-divider
           align="center"

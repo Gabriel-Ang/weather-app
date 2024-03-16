@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // services
-import { DataService, weatherData } from '../../services/data.service';
+import { DataService, weatherData, directGeocodeObj } from '../../services/data.service';
 
 // primeng
 import { DividerModule } from 'primeng/divider';
@@ -13,8 +13,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessagesModule } from 'primeng/messages';
-import { Message, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ListboxModule } from 'primeng/listbox';
 
 // rxjs
 import { interval } from 'rxjs';
@@ -35,6 +36,7 @@ interface Language {
     DropdownModule,
     FormsModule,
     MessagesModule,
+    ListboxModule,
     ToastModule,
   ],
   templateUrl: './weather.component.html',
@@ -51,6 +53,19 @@ export class WeatherComponent implements OnInit {
   langList: Language[] = [];
   selectedLang: Language = { name: 'English', code: 'EN' };
   inputText : string = ''; // city/postcode input weather-input-text
+  listboxVisible : boolean = false;
+  selectedCity : any;
+
+  citiesList = computed(() => {
+    let arr : any = [];
+    this.dataService.directGeocodeList().map((city : any) => {
+      let res = {
+        name: `${city.name}, ${city.country}`, code:`${city.lat}${city.lon}`
+      };
+      arr = [res, ...arr];
+    })
+    return arr;
+  })
 
   ngOnInit() {
     this.getTimeNow();
@@ -62,23 +77,34 @@ export class WeatherComponent implements OnInit {
       { name: 'Korean', code: 'KR' },
       { name: 'Spanish', code: 'ES' },
     ];
+  };
+
+  handleListBoxSubmit(){
+    this.listboxVisible = false;
+    const obj = this.dataService.directGeocodeList().find((obj : directGeocodeObj) => {
+      let string = obj.lat.toString() + obj.lon.toString();
+      if(string === this.selectedCity.code){
+        return obj;
+      }else{
+        return undefined;
+      }
+    });
+    this.dataService.fetchWeatherData(obj!.lat, obj!.lon,'metric',this.selectedLang.code.toLowerCase());
   }
 
   inputTextEnter(){
-    // pipe input text value, in case it is coordinate or country/city?
-    // take piped input text value and plug it into api call
     // add langlist to api call as well if selectedLang.code !== 'EN'
     this.dataService.fetchDirectGeocode(this.inputText.toLowerCase(), this.selectedLang.code.toLowerCase());
     this.getData();
+    this.inputText = '';
+    // NOTIN SYNC , WHEN THIS EXECUTES THE LIST IS STILL EMPTY
+    if(this.dataService.directGeocodeList().length > 1){
+      this.listboxVisible = true;
+      console.log('citiesList: ', this.citiesList());
+    };
   }
 
   getData() {
-    // this.dataService.fetchWeatherData(
-    //   1.3477394782902952,
-    //   103.74652122700614,
-    //   'metric',
-    //   'eng'
-    // );
   }
 
   toggleDivider() {

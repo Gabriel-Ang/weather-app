@@ -37,7 +37,7 @@ export interface weatherData {
     gust: number
   },
   rain?: {
-    '1h': number
+    '1h'?: number
   },
   clouds: {
     all: number
@@ -155,7 +155,7 @@ export class DataService {
   // city only
   fetchDirectGeocode(cityName?: string, langCode?: string) {
     const _self = this;
-    this.http.get(`${directGeocodingApi}${cityName}&limit=5&appid=${apiKey}`)
+    this.http.get(`${directGeocodingApi}${cityName}&limit=3&appid=${apiKey}`)
       .subscribe({
         next(dataIn: any) {
           _self.directGeocodeList.set([]);
