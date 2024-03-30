@@ -1,39 +1,95 @@
-/* You can add global styles to this file, and also import other style files */
+// /* You can add global styles to this file, and also import other style files */
 @import "primeicons/primeicons.css";
 
-.weather-content{
-    margin : 0;
-    padding: 2rem;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-.weather-input{
-    width: 100%;
-    margin: 0 0 0 calc(100% - 480px);
-    position: absolute;
-    border-radius: 30px;
-}
-.weather-header{
-    display: inline-flex;
-    flex-wrap: nowrap;
-    margin: 0 0 0 0;
-    padding: 10px;
-}
-.weather-data{
-    width: 100%;
-}
-.weather-lang {
-    margin: 0 0 0 calc(100% - 190px);
-    position: absolute;
-    .p-dropdown {
-        width: 7rem;
-        border-radius: 30px;
+body{
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    // overflow: hidden;
+    .weather-container{
+        display: flex;
+        flex-direction: column;
+        padding: 20px 10px;
+        // overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        .weather-header{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 45px;
+            margin: 0 0 10px 0;
+            .weather-header-left{
+                display: flex;
+                align-items: center !important;
+                max-width: 50%;
+                .time-display {
+                }
+            }
+            .weather-header-right{
+                display: flex;
+                flex-direction: row;
+                gap: 5px;
+                .weather-input {
+                }
+                .weather-lang {
+                    .p-dropdown {
+                        border-radius: 20px;
+                    }
+                }
+                .weather-input-text{
+                    border-radius: 20px;
+                }
+            }
+        }
+        .weather-body{
+            width: 100%;
+            height: calc(100vh - 95px);
+            .weather-data{
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 20px;
+                .data-row{
+                    display: flex;
+                    flex-direction: row;
+                    gap: 20px;
+                    width: 100%;
+                    flex-grow: 1;
+                    flex-wrap: wrap;
+                    .data-main{
+                        display: flex;
+                        flex-grow: 1;
+                        // width: 65%;
+                        max-width: calc(65% - 10px);
+                        .p-card{
+                            height: 100%;
+                            .p-card-body{
+
+                            } 
+                        }     
+                    }
+                    .data-secondary{
+                        display: flex;
+                        flex-grow: 1;
+                        // width: 35%;
+                        max-width: calc(35% - 10px);
+                        .p-card{
+                            height: 100%;
+                            .p-card-body{
+
+                            } 
+                        } 
+                    }
+                }
+            }
+        }
     }
 }
-.weather-input-text{
-    border-radius: 50px;
-}
-.time-display {
-    padding: 11px 0 0 0;
+
+@media screen and (max-width: 768px) {
+    body .weather-container .weather-body .weather-data .data-row .data-main,
+    body .weather-container .weather-body .weather-data .data-row .data-secondary {
+        max-width: 100%;
+    }
 }

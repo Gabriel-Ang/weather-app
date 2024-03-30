@@ -5,7 +5,7 @@ import { HttpClientModule, provideHttpClient, withJsonpSupport, withInterceptors
 import { provideAnimations, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { BrowserModule } from '@angular/platform-browser';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom([BrowserModule, BrowserAnimationsModule]),
     provideHttpClient(withJsonpSupport(), withInterceptorsFromDi()),
     MessageService,
-    HttpClientModule
+    HttpClientModule,
+    ConfirmationService,
   ]
 };

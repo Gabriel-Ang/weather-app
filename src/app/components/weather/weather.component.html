@@ -2,92 +2,176 @@
   <p-toast position="top-left" [life]="2000"></p-toast>
 </div>
 
+<div class="card flex justify-content-center gap-2">
+  <!-- <p-toast></p-toast> -->
+  <p-confirmPopup>
+      <ng-template pTemplate="content" let-message>
+          <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border p-3 mb-3">
+              <i [class]="message.icon" class="text-6xl text-primary-500"></i>
+              <p>{{ message.message }}</p>
+          </div>
+      </ng-template>
+  </p-confirmPopup>
+</div>
+
+<!-- <p-dialog header="Select Location" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="false">
+  <p class="m-0">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</p-dialog> -->
+
 <div class="weather-container">
-  <div class="weather-content">
-    <div class="weather-header">
+  <div class="weather-header">
+    <div class="weather-header-left">
       <div class="time-display">
         {{ timeNow() }}
       </div>
+    </div>
+    <div class="weather-header-right">
       <div class="weather-input">
-        <span class="p-float-label p-input-icon-right">
-          <i class="pi pi-search"></i>
-          <input pInputText type="text" class="weather-input-text" [(ngModel)]="inputText" (keydown.enter)="inputTextEnter()"/>
-          <label for="country">Search City or Postcode</label>
+        <span class="p-input-icon-right">
+          <i 
+          class="pi pi-search" 
+          (click)="inputTextEnter($event)" 
+          [style]="{'cursor' : 'pointer'}">
+          </i>
+          <input 
+          pInputText 
+          type="text" 
+          class="weather-input-text" 
+          [(ngModel)]="inputText" 
+          (keydown.enter)="inputTextEnter($event)" 
+          placeholder="Search City or Postcode"
+          />
         </span>
       </div>
       <div class="weather-lang">
-        <p-dropdown class="lang-dropdown" [options]="langList" [(ngModel)]="selectedLang" optionLabel="code" [showClear]="false" placeholder="English" [tooltip]="selectedLang.name" tooltipPosition="bottom" ></p-dropdown>
+        <p-dropdown 
+        class="lang-dropdown" 
+        [options]="langList" [(ngModel)]="selectedLang" 
+        optionLabel="code" 
+        [showClear]="false" 
+        placeholder="English" 
+        [tooltip]="selectedLang.name" 
+        tooltipPosition="bottom" 
+        >
+        </p-dropdown>
       </div>
     </div>
-    
-    <div class="weather-body">
-      <div class="weather-data">
-        <p-divider 
-        align="center" 
-        type="solid"
-        >
-          <b>divider 1</b>
-        </p-divider>
+  </div>
+  <!-- <p-divider 
+  align="center" 
+  type="solid"
+  >
+  </p-divider> -->
   
-        <p class="m-0">
-          <br>
-          Last Updated: {{ this.dataService.dt_time() }}
-          <br>
-          Language: {{ selectedLang.name }}
-          <br>
-          City/Postcode Input : {{ inputText }}
-          <br>
-           data: {{ data()|json }}
-           <br>
-           citiesList : {{citiesList()|json}}
-           <br>
-           listboxvisible : {{ listboxVisible }}
-           <br>
-           selectedCity : {{ selectedCity|json}}
-        </p>
+  <div class="weather-body">
+    <div class="weather-data">
+      <div class="data-row">
+        <div class="card flex justify-content-center data-main">
+          <p-card header="Current Weather">
+              <p class="m-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+                  quas!
+              </p>
+          </p-card>
+        </div>
+        <div class="card flex justify-content-center data-secondary">
+          <p-card header="Map">
+              <p class="m-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+                  quas!
+              </p>
+          </p-card>
+        </div>
+      </div>
+      <div class="data-row">
+        <div class="card flex justify-content-center data-main">
+          <p-card header="Overview">
+              <p class="m-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+                  quas!
+              </p>
+          </p-card>
+        </div>
+        <div class="card flex justify-content-center data-secondary">
+          <p-card header="Forecast">
+              <p class="m-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+                  quas!
+              </p>
+          </p-card>
+        </div>
+      </div>
 
-        @if(listboxVisible){
-          <div class="card flex justify-content-center">
-            <p-listbox
-            [options]="citiesList()"
-            [(ngModel)] = "selectedCity"
-            optionLabel="name"
-            [style]="{'width':'10rem'}" 
-            [listStyle]="{'max-height': '220px'}"
-            ></p-listbox>
-          </div>
-          <button 
-          pButton 
-          pRipple 
-          label="Submit" 
-          class="p-button-success" 
-          (click)="handleListBoxSubmit()"
-          [disabled]="!this.selectedCity">
-          </button>
-        }
-        
-  
-        <p-divider
-          align="center"
-          type="solid"
-          (click)="toggleDivider()"
-          class="divider-toggle-container"
+      <!-- <p-divider 
+      align="center" 
+      type="solid"
+      >
+        <b>divider 1</b>
+      </p-divider> -->
+
+      <!-- <p class="m-0">
+        <br>
+        Last Updated: {{ this.dataService.dt_time() }}
+        <br>
+        Language: {{ selectedLang.name }}
+        <br>
+        City/Postcode Input : {{ inputText }}
+        <br>
+          data: {{ data()|json }}
+          <br>
+          citiesList : {{citiesList()|json}}
+          <br>
+          listboxvisible : {{ listboxVisible }}
+          <br>
+          selectedCity : {{ selectedCity|json}}
+      </p>
+
+      @if(listboxVisible){
+        <div class="card flex justify-content-center">
+          <p-listbox
+          [options]="citiesList()"
+          [(ngModel)] = "selectedCity"
+          optionLabel="name"
+          [style]="{'width':'10rem'}" 
+          [listStyle]="{'max-height': '220px'}"
+          >
+        </p-listbox>
+        </div>
+        <button 
+        pButton 
+        pRipple 
+        label="Submit" 
+        class="p-button-success" 
+        (click)="handleListBoxSubmit()"
+        [disabled]="!this.selectedCity"
         >
-          <i [class]="dividerIcon()"></i>
-        </p-divider>
-  
-        @if(this.dividerFlag()){
-        <p class="m-0">
-          Temporibus autem quibusdam et aut officiis debitis aut rerum
-          necessitatibus saepe eveniet ut et voluptates repudiandae sint et
-          molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-          perferendis doloribus asperiores repellat. Donec vel volutpat ipsum.
-          Integer nunc magna, posuere ut tincidunt eget, egestas vitae sapien.
-          Morbi dapibus luctus odio.
-        </p>
-        }
-      </div>
-    </div>
+        </button>
+      }
+      
+
+      <p-divider
+        align="center"
+        type="solid"
+        (click)="toggleDivider()"
+        class="divider-toggle-container"
+      >
+        <i [class]="dividerIcon()"></i>
+      </p-divider>
+
+      @if(this.dividerFlag()){
+      <p class="m-0">
+        Temporibus autem quibusdam et aut officiis debitis aut rerum
+        necessitatibus saepe eveniet ut et voluptates repudiandae sint et
+        molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
+        delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
+        perferendis doloribus asperiores repellat. Donec vel volutpat ipsum.
+        Integer nunc magna, posuere ut tincidunt eget, egestas vitae sapien.
+        Morbi dapibus luctus odio.
+      </p>
+      }
+    </div> -->
   </div>
 </div>

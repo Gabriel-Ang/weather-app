@@ -13,9 +13,12 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessagesModule } from 'primeng/messages';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ListboxModule } from 'primeng/listbox';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { CardModule } from 'primeng/card';
 
 // rxjs
 import { interval } from 'rxjs';
@@ -38,12 +41,15 @@ interface Language {
     MessagesModule,
     ListboxModule,
     ToastModule,
+    DialogModule,
+    ConfirmPopupModule,
+    CardModule,
   ],
   templateUrl: './weather.component.html',
   styleUrl: './weather.component.scss',
 })
 export class WeatherComponent implements OnInit {
-  constructor(private http: HttpClient, private msgService: MessageService) {}
+  constructor(private http: HttpClient, private msgService: MessageService, private cfmService:ConfirmationService) {}
 
   dataService = inject(DataService);
   data = computed(() => this.dataService.data());
@@ -55,6 +61,7 @@ export class WeatherComponent implements OnInit {
   inputText : string = ''; // city/postcode input weather-input-text
   listboxVisible : boolean = false;
   selectedCity : any;
+  dialogVisible : boolean = false;
 
   citiesList = computed(() => {
     let arr : any = [];
@@ -92,14 +99,33 @@ export class WeatherComponent implements OnInit {
     this.dataService.fetchWeatherData(obj!.lat, obj!.lon,'metric',this.selectedLang.code.toLowerCase());
   }
 
-  inputTextEnter(){
+  confirm(event : Event) {
+    this.cfmService.confirm({
+        target: event.target as EventTarget,
+        message: 'Please confirm to proceed moving forward.',
+        icon: 'pi pi-exclamation-circle',
+        acceptIcon: 'pi pi-check mr-1',
+        rejectIcon: 'pi pi-times mr-1',
+        rejectButtonStyleClass: 'p-button-danger p-button-sm',
+        acceptButtonStyleClass: 'p-button-outlined p-button-sm',
+        accept: () => {
+            this.msgService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+        },
+        reject: () => {
+            this.msgService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+}
+
+  inputTextEnter(event : Event){
     // add langlist to api call as well if selectedLang.code !== 'EN'
     this.dataService.fetchDirectGeocode(this.inputText.toLowerCase(), this.selectedLang.code.toLowerCase());
-    this.getData();
     this.inputText = '';
     // NOTIN SYNC , WHEN THIS EXECUTES THE LIST IS STILL EMPTY
     if(this.dataService.directGeocodeList().length > 1){
-      this.listboxVisible = true;
+      // this.listboxVisible = true;
+      // this.dialogVisible = true;
+      this.confirm(event);
       console.log('citiesList: ', this.citiesList());
     };
   }
