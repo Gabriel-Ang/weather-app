@@ -1,0 +1,38 @@
+<div class="weather-header">
+      <div class="time-display">
+        <!-- {{ timeNow() }} -->
+        Weather App
+      </div>
+    <div class="weather-header-right">
+      <div class="weather-input mr-2">
+        <span class="p-input-icon-right">
+          <i 
+          class="pi pi-search" 
+          (click)="inputTextEnter($event)" 
+          [style]="{'cursor' : 'pointer'}">
+          </i>
+          <input 
+          pInputText 
+          type="text" 
+          class="weather-input-text" 
+          [(ngModel)]="inputText" 
+          (keydown.enter)="inputTextEnter($event)" 
+          placeholder="Search City or Postcode"
+          />
+        </span>
+      </div>
+      <div class="weather-lang">
+        <p-dropdown 
+        class="lang-dropdown" 
+        [options]="langList" 
+        [(ngModel)]="selectedLang" 
+        optionLabel="code" 
+        [showClear]="false" 
+        placeholder="English" 
+        [tooltip]="selectedLang.name" 
+        tooltipPosition="bottom" 
+        >
+        </p-dropdown>
+      </div>
+    </div>
+  </div>

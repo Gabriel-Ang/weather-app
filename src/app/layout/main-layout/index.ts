@@ -1,0 +1,1 @@
+export { MainLayoutComponent as default, MainLayoutComponent} from './main-layout.component';

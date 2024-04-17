@@ -3,9 +3,36 @@
 
 body{
     width: 100vw;
+    height: 100vh;
     margin: 0;
     padding: 0;
-    // overflow: hidden;
+    overflow: hidden;
+    app-header{
+        display: flex;
+        height: 50px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 1;
+        padding: 5px;
+        .weather-header{
+            display: flex;
+            height: 100%;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            .weather-header-right{
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+    main{
+        height: calc(100vh - 50px);
+        position: fixed;
+        bottom: 0;
+        overflow-y: auto;
+    }
     .weather-container{
         display: flex;
         flex-direction: column;
@@ -13,35 +40,6 @@ body{
         // overflow: hidden;
         width: 100vw;
         height: 100vh;
-        .weather-header{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            height: 45px;
-            margin: 0 0 10px 0;
-            .weather-header-left{
-                display: flex;
-                align-items: center !important;
-                max-width: 50%;
-                .time-display {
-                }
-            }
-            .weather-header-right{
-                display: flex;
-                flex-direction: row;
-                gap: 5px;
-                .weather-input {
-                }
-                .weather-lang {
-                    .p-dropdown {
-                        border-radius: 20px;
-                    }
-                }
-                .weather-input-text{
-                    border-radius: 20px;
-                }
-            }
-        }
         .weather-body{
             width: 100%;
             height: calc(100vh - 95px);

@@ -1,6 +1,15 @@
-import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
+import { Routes } from '@angular/router'
 
 export const routes: Routes = [
-    {path: '', component: HomeComponent}
+    {
+        path: '',
+        loadComponent: () => import("./layout/main-layout").then(m => m.MainLayoutComponent),
+        children:[
+            {
+                path: 'weather',
+                pathMatch: 'full',
+                loadComponent: () => import("./components/weather/weather.component").then(m => m.WeatherComponent) 
+            }
+        ]
+    }
 ];

@@ -1,0 +1,1 @@
+export { WeatherComponent as default, WeatherComponent} from './weather.component';
