@@ -74,7 +74,8 @@ export class DataService {
 
   // raw data (json)
   data = signal<weatherData[] | undefined>(undefined);
-  directGeocodeList = signal<directGeocodeObj[]>([]);
+  directGeocodeList = signal<directGeocodeObj[] | undefined>(undefined);
+  showGeocodeList : boolean = false;
 
   // extracted data
   weather_id = signal<number | undefined>(undefined);
@@ -124,6 +125,28 @@ export class DataService {
     this.sys_type.set(this.data()![0].sys.type);
     this.sys_id.set(this.data()![0].sys.type);
     this.sys_country.set(this.data()![0].sys.country);
+
+    // this.dt_time.set(this.convertUnix(this.data()?[0].dt))
+    // this.sunrise_time.set(this.convertUnix(this.data()?[0].sys.sunrise));
+    // this.sunset_time.set(this.convertUnix(this.data()?[0].sys.sunset));
+    // this.weather_id.set(this.data()?[0].weather[0].id);
+    // this.weather_main.set(this.data()?[0].weather[0].main);
+    // this.weather_desc.set(this.data()?[0].weather[0].description);
+    // this.weather_icon.set(this.data()?[0].weather[0].icon);
+    // this.temp.set(this.data()?[0].main.temp);
+    // this.feels_like.set(this.data()?[0].main.feels_like);
+    // this.temp_min.set(this.data()?[0].main.temp_min);
+    // this.temp_max.set(this.data()?[0].main.temp_max);
+    // this.pressure.set(this.data()?[0].main.pressure);
+    // this.humidity.set(this.data()?[0].main.humidity);
+    // this.visibility.set(this.data()?[0].visibility);
+    // this.wind_speed.set(this.data()?[0].wind.speed);
+    // this.wind_deg.set(this.data()?[0].wind.deg);
+    // this.rain.set(this.data()?[0].rain?.['1h']);
+    // this.clouds.set(this.data()?[0].clouds.all);
+    // this.sys_type.set(this.data()?[0].sys.type);
+    // this.sys_id.set(this.data()?[0].sys.type);
+    // this.sys_country.set(this.data()?[0].sys.country);
   }
 
   // convert unix to time
@@ -134,55 +157,75 @@ export class DataService {
   }
 
   // fetch weather data, units: standard, metric, imperial
+  // fetchWeatherData(lat: number, lon: number, units: string, lang: string) {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       this.http.get(`${weatherApi}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
+  //         .subscribe((dataIn: any) => {
+  //           this.data.set([dataIn]);
+  //           console.log(this.data());
+  //           this.extractData();
+  //           resolve(dataIn);
+  //           this.msgService.add({ severity: 'success', summary: 'Success', detail: 'Data Successfully Retrieved' });
+  //         })
+  //     } catch (error) {
+  //       reject(error);
+  //       this.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Data' });
+  //     }
+  //   })
+  // };
+
   fetchWeatherData(lat: number, lon: number, units: string, lang: string) {
-    return new Promise((resolve, reject) => {
-      try {
-        this.http.get(`${weatherApi}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
-          .subscribe((dataIn: any) => {
-            this.data.set([dataIn]);
-            console.log(this.data());
-            this.extractData();
-            resolve(dataIn);
-            this.msgService.add({ severity: 'success', summary: 'Success', detail: 'Data Successfully Retrieved' });
-          })
-      } catch (error) {
-        reject(error);
-        this.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Data' });
+    const _self = this;
+    this.http.get(`${weatherApi}lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${lang}`)
+    .subscribe({
+      next(dataIn : any) {
+        _self.data.set([dataIn]);
+        console.log(_self.data());
+        _self.extractData();
+        _self.msgService.add({ severity: 'success', summary: 'Success Retrieving Weather Data', detail: 'Data Successfully Retrieved' });
+      },error(err : any) {
+        console.log(err);
+        _self.msgService.add({ severity: 'warn', summary: 'Error Retrieving Weather Data', detail: err.message });
       }
-    })
-  };
+    });
+  }
 
   // city only
-  fetchDirectGeocode(cityName?: string, langCode?: string) {
+  fetchDirectGeocode(langCode: string, cityName?: string) {
     const _self = this;
+    _self.showGeocodeList = false;
     this.http.get(`${directGeocodingApi}${cityName}&limit=3&appid=${apiKey}`)
       .subscribe({
         next(dataIn: any) {
           _self.directGeocodeList.set([]);
           console.log('Location Data Successfully Retrieved', dataIn);
           _self.msgService.add({ severity: 'success', summary: 'Success', detail: 'Successfully Retrieved Direct Geocode' });
-          dataIn.map((obj: any) => {
-            const lang_code : string = langCode!;
+          dataIn.forEach((obj: any) => {
+            let res : directGeocodeObj;
             if(obj.local_names){
-              const res : directGeocodeObj = {
+              res = {
                 name: obj.name,
-                local_name: obj.local_names[lang_code],
+                local_name: obj.local_names[langCode],
                 lat: obj.lat,
                 lon: obj.lon,
                 country: obj.country,
                 state: obj.state,
               };
-              _self.directGeocodeList.update(list => [...list, res]);
             }else{
-              const res : directGeocodeObj = {
+              res = {
                 name: obj.name,
                 lat: obj.lat,
                 lon: obj.lon,
                 country: obj.country,
                 state: obj.state,
               };
-              _self.directGeocodeList.update(list => [...list, res]);
             }
+            _self.directGeocodeList.update((list : any) => [...list, res]);
+            if(_self.directGeocodeList &&  _self.directGeocodeList()!.length > 1){
+              _self.showGeocodeList = true;
+            } // else call get weather data for the only value in the list straight away
+            console.log('showgeocodelist', _self.showGeocodeList);
           });
           console.log(_self.directGeocodeList());
         }, error(err: any) {

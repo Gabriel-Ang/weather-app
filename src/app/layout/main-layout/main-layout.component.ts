@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 // Components
 import { HeaderComponent } from '../header/header.component';
 
@@ -14,5 +14,11 @@ import { HeaderComponent } from '../header/header.component';
   styleUrl: './main-layout.component.scss'
 })
 export class MainLayoutComponent {
-
+  router = inject(Router);
+  
+  ngOnInit() {
+    if(this.router.url == '/'){
+      this.router.navigate(['/weather'])
+    }
+  }
 }

@@ -1,38 +1,49 @@
-<div class="weather-header">
-      <div class="time-display">
-        <!-- {{ timeNow() }} -->
-        Weather App
-      </div>
-    <div class="weather-header-right">
-      <div class="weather-input mr-2">
-        <span class="p-input-icon-right">
-          <i 
-          class="pi pi-search" 
-          (click)="inputTextEnter($event)" 
-          [style]="{'cursor' : 'pointer'}">
-          </i>
-          <input 
-          pInputText 
-          type="text" 
-          class="weather-input-text" 
-          [(ngModel)]="inputText" 
-          (keydown.enter)="inputTextEnter($event)" 
-          placeholder="Search City or Postcode"
-          />
-        </span>
-      </div>
-      <div class="weather-lang">
-        <p-dropdown 
-        class="lang-dropdown" 
-        [options]="langList" 
-        [(ngModel)]="selectedLang" 
-        optionLabel="code" 
-        [showClear]="false" 
-        placeholder="English" 
-        [tooltip]="selectedLang.name" 
-        tooltipPosition="bottom" 
-        >
-        </p-dropdown>
-      </div>
+<div class="weather-header" #header>
+  <div class="time-display">
+    <!-- {{ timeNow() }} -->
+    {{ dataService.showGeocodeList }}
+    Weather App
+  </div>
+  <div class="weather-header-right">
+    <div class="weather-input mr-2">
+      <span class="p-input-icon-right">
+        <i 
+        class="pi pi-search" 
+        (click)="inputTextEnter($event)" 
+        [style]="{'cursor' : 'pointer'}">
+        </i>
+        <input 
+        pInputText 
+        type="text" 
+        class="weather-input-text" 
+        [(ngModel)]="inputText" 
+        (keydown.enter)="inputTextEnter($event)" 
+        placeholder="Search City or Postcode"
+        />
+      </span>
+    </div>
+    <div class="weather-lang">
+      <p-dropdown 
+      class="lang-dropdown" 
+      [options]="langList" 
+      [(ngModel)]="selectedLang" 
+      optionLabel="code" 
+      [showClear]="false"
+      [tooltip]="selectedLang.name" 
+      tooltipPosition="bottom" 
+      >
+      </p-dropdown>
     </div>
   </div>
+</div>
+
+<p-dialog 
+[(visible)]="dataService.showGeocodeList"
+[appendTo]="header"
+[style]="{position : 'fixed', top : '60px', 'max-width' : '90vw', right : '100px'}"
+>
+    <!-- <div class="flex py-2 justify-content-center">
+        <p-dropdown appendTo="body" [options]="cities" [(ngModel)]="selectedCity" placeholder="Select a City" optionLabel="name"></p-dropdown>
+    </div> -->
+    testing
+</p-dialog>

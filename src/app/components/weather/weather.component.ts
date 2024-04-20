@@ -65,7 +65,7 @@ export class WeatherComponent implements OnInit {
 
   citiesList = computed(() => {
     let arr : any = [];
-    this.dataService.directGeocodeList().map((city : any) => {
+    this.dataService.directGeocodeList()?.map((city : any) => {
       let res = {
         name: `${city.name}, ${city.country}`, code:`${city.lat}${city.lon}`
       };
@@ -88,7 +88,7 @@ export class WeatherComponent implements OnInit {
 
   handleListBoxSubmit(){
     this.listboxVisible = false;
-    const obj = this.dataService.directGeocodeList().find((obj : directGeocodeObj) => {
+    const obj = this.dataService.directGeocodeList()?.find((obj : directGeocodeObj) => {
       let string = obj.lat.toString() + obj.lon.toString();
       if(string === this.selectedCity.code){
         return obj;
@@ -116,19 +116,6 @@ export class WeatherComponent implements OnInit {
         }
     });
 }
-
-  inputTextEnter(event : Event){
-    // add langlist to api call as well if selectedLang.code !== 'EN'
-    this.dataService.fetchDirectGeocode(this.inputText.toLowerCase(), this.selectedLang.code.toLowerCase());
-    this.inputText = '';
-    // NOTIN SYNC , WHEN THIS EXECUTES THE LIST IS STILL EMPTY
-    if(this.dataService.directGeocodeList().length > 1){
-      // this.listboxVisible = true;
-      // this.dialogVisible = true;
-      this.confirm(event);
-      console.log('citiesList: ', this.citiesList());
-    };
-  }
 
   getData() {
   }

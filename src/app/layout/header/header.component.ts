@@ -2,11 +2,15 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 // PrimeNg
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+
 // Rxjs
 import { interval } from 'rxjs';
+
 // Services
 import { DataService } from '../../services/data.service';
 
@@ -23,6 +27,7 @@ interface Language {
     DropdownModule,
     FormsModule,
     InputTextModule,
+    DialogModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -32,7 +37,8 @@ export class HeaderComponent {
   timeNow = signal<any>(''); // current time, on 1 second
   selectedLang: Language = { name: 'English', code: 'EN' };
   inputText : string = '';
-  langList : any = [
+  dialogVisible : boolean = false;
+  langList : Language[] = [
     { name: 'English', code: 'EN' },
     { name: 'Chinese Simplified', code: 'CN' },
     { name: 'French', code: 'FR' },
@@ -42,7 +48,7 @@ export class HeaderComponent {
   ];
   citiesList = computed(() => {
     let arr : any = [];
-    this.dataService.directGeocodeList().map((city : any) => {
+    this.dataService.directGeocodeList()?.map((city : any) => {
       let res = {
         name: `${city.name}, ${city.country}`, code:`${city.lat}${city.lon}`
       };
@@ -57,15 +63,16 @@ export class HeaderComponent {
 
   inputTextEnter(event : Event){
     // add langlist to api call as well if selectedLang.code !== 'EN'
-    this.dataService.fetchDirectGeocode(this.inputText.toLowerCase(), this.selectedLang.code.toLowerCase());
+    this.dataService.fetchDirectGeocode(this.selectedLang.code.toLowerCase(), this.inputText.toLowerCase());
     this.inputText = '';
+
     // NOTIN SYNC , WHEN THIS EXECUTES THE LIST IS STILL EMPTY
-    if(this.dataService.directGeocodeList().length > 1){
-      // this.listboxVisible = true;
-      // this.dialogVisible = true;
-      // this.confirm(event);
-      console.log('citiesList: ', this.citiesList());
-    };
+    // if(this.dataService.directGeocodeList()?.length > 1){
+    //   // this.listboxVisible = true;
+    //   // this.dialogVisible = true;
+    //   // this.confirm(event);
+    //   console.log('citiesList: ', this.citiesList());
+    // };
   }
 
   // rxjs interval to show live time
