@@ -1,5 +1,9 @@
-<div class="card flex justify-content-center gap-2">
-  <p-toast position="top-left" [life]="2000"></p-toast>
+<div class="card flex justify-content-center gap-2 w-100">
+  <p-toast 
+  position="top-left" 
+  [life]="3000"
+  [style]="{'z-index' :'999'}"
+  ></p-toast>
 </div>
 
 <div class="card flex justify-content-center gap-2">
@@ -20,29 +24,53 @@
       consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
   </p>
 </p-dialog> -->
-
 <div class="weather-container">
   <div class="weather-body">
-    <div class="data-row">
-      <div class="card flex justify-content-center data-main">
-        <p-card header="Current Weather">
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                quas!
-            </p>
-        </p-card>
+    @if(dataService.data()){
+      <div class="data-row">
+        <div class="card flex justify-content-center data-primary">
+          <p-card>
+            <div class="card-content flex flex-row w-full h-full justify-content-around">
+              <div class="current-data flex flex-column justify-content-center align-items-center">
+                <img class="weather-icon" [src]="dataService.iconUrl()" alt="Weather Icon" [style]="{'height' : '100px', 'width' : '100px'}">
+              </div>
+              <div class=" current-data flex flex-column justify-content-center align-items-center">
+                <div class="text-4xl">
+                  {{ dataService.name}}
+                </div>
+              </div>
+              @for(data of dataService.mainData; track data.label){
+                <div 
+                class="current-data flex flex-column justify-content-center align-items-center"
+                [style]="{'padding-top' : '20px'}"
+                >
+                  <div class="current-data-primary text-4xl">
+                    {{ data.value }}<span [innerHTML]="data.unit"></span>
+                    <div class="current-data-secondary flex justify-content-center"
+                    [style]="{'height' : '20px'}"
+                    >
+                      <small class="text-base">
+                        {{ data.label }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </p-card>
+        </div>
+        <!-- <div class="card flex justify-content-center data-secondary">
+          <p-card header="Map">
+              <p class="m-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+                  quas!
+              </p>
+          </p-card>
+        </div> -->
       </div>
-      <div class="card flex justify-content-center data-secondary">
-        <p-card header="Map">
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                quas!
-            </p>
-        </p-card>
-      </div>
-    </div>
+    }
     <div class="data-row">
-      <div class="card flex justify-content-center data-main">
+      <div class="card flex justify-content-center data-primary">
         <p-card header="Overview">
             <p class="m-0">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
@@ -59,73 +87,4 @@
         </p-card>
       </div>
     </div>
-
-    <!-- <p-divider 
-    align="center" 
-    type="solid"
-    >
-      <b>divider 1</b>
-    </p-divider> -->
-
-    <!-- <p class="m-0">
-      <br>
-      Last Updated: {{ this.dataService.dt_time() }}
-      <br>
-      Language: {{ selectedLang.name }}
-      <br>
-      City/Postcode Input : {{ inputText }}
-      <br>
-        data: {{ data()|json }}
-        <br>
-        citiesList : {{citiesList()|json}}
-        <br>
-        listboxvisible : {{ listboxVisible }}
-        <br>
-        selectedCity : {{ selectedCity|json}}
-    </p>
-
-    @if(listboxVisible){
-      <div class="card flex justify-content-center">
-        <p-listbox
-        [options]="citiesList()"
-        [(ngModel)] = "selectedCity"
-        optionLabel="name"
-        [style]="{'width':'10rem'}" 
-        [listStyle]="{'max-height': '220px'}"
-        >
-      </p-listbox>
-      </div>
-      <button 
-      pButton 
-      pRipple 
-      label="Submit" 
-      class="p-button-success" 
-      (click)="handleListBoxSubmit()"
-      [disabled]="!this.selectedCity"
-      >
-      </button>
-    }
-    
-
-    <p-divider
-      align="center"
-      type="solid"
-      (click)="toggleDivider()"
-      class="divider-toggle-container"
-    >
-      <i [class]="dividerIcon()"></i>
-    </p-divider>
-
-    @if(this.dividerFlag()){
-    <p class="m-0">
-      Temporibus autem quibusdam et aut officiis debitis aut rerum
-      necessitatibus saepe eveniet ut et voluptates repudiandae sint et
-      molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-      delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-      perferendis doloribus asperiores repellat. Donec vel volutpat ipsum.
-      Integer nunc magna, posuere ut tincidunt eget, egestas vitae sapien.
-      Morbi dapibus luctus odio.
-    </p>
-    }
-  </div> -->
 </div>

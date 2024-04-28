@@ -76,6 +76,7 @@ export class WeatherComponent implements OnInit {
 
   ngOnInit() {
     this.getTimeNow();
+    this.dataService.getCurrentLocation();
     this.langList = [
       { name: 'English', code: 'EN' },
       { name: 'Chinese Simplified', code: 'CN' },

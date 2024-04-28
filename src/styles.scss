@@ -58,25 +58,44 @@ body{
                 width: 100%;
                 flex-grow: 1;
                 flex-wrap: wrap;
-                .data-main{
+                .data-primary{
                     display: flex;
                     flex-grow: 1;
-                    max-width: calc(65% - 10px);
-                    .p-card{
+                    // max-width: calc(65% - 10px);;
+                    width: calc(65% - 10px);
+                    height: 100%;
+                    p-card{
                         height: 100%;
+                        width: 100%;
+                        .p-card.p-component{
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: flex-start;
+                            width: 100%;
+                            height: 100%;
+                        }
                         .p-card-body{
-
-                        } 
+                            width: 100%;
+                        }
                     }     
                 }
                 .data-secondary{
                     display: flex;
                     flex-grow: 1;
-                    max-width: calc(35% - 10px);
-                    .p-card{
+                    width: calc(35% - 10px);
+                    height: 100%;
+                    p-card{
                         height: 100%;
+                        width: 100%;
+                        .p-card.p-component{
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: flex-start;
+                            width: 100%;
+                            height: 100%;
+                        }
                         .p-card-body{
-
+                            width: 100%;
                         } 
                     } 
                 }
@@ -86,9 +105,9 @@ body{
 }
 
 @media screen and (max-width: 768px) {
-    body .weather-container .weather-body .data-row .data-main,
+    body .weather-container .weather-body .data-row .data-primary,
     body .weather-container .weather-body .data-row .data-secondary {
-        max-width: 100%;
+        width: 100%;
     }
     .time-display{
         display: none;
@@ -102,5 +121,20 @@ body{
         .weather-lang{
             width: 20% !important;
         }
+    }
+    .card-content{
+        flex-wrap: wrap;
+    }
+    .current-data{
+        width: 50%;
+    }
+    .weather-country{
+        width: 50%;
+    }
+    .text-4xl{
+        font-size: 25px !important;
+    }
+    .text-base{
+        font-size: 13px !important;
     }
 }
