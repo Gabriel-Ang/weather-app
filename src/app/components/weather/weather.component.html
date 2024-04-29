@@ -7,7 +7,6 @@
 </div>
 
 <div class="card flex justify-content-center gap-2">
-  <!-- <p-toast></p-toast> -->
   <p-confirmPopup>
       <ng-template pTemplate="content" let-message>
           <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border p-3 mb-3">
@@ -18,25 +17,24 @@
   </p-confirmPopup>
 </div>
 
-<!-- <p-dialog header="Select Location" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="false">
-  <p class="m-0">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-</p-dialog> -->
 <div class="weather-container">
   <div class="weather-body">
     @if(dataService.data()){
       <div class="data-row">
         <div class="card flex justify-content-center data-primary">
           <p-card>
+            <div
+            class="text-2xl"
+            >
+              Now
+            </div>
             <div class="card-content flex flex-row w-full h-full justify-content-around">
               <div class="current-data flex flex-column justify-content-center align-items-center">
-                <img class="weather-icon" [src]="dataService.iconUrl()" alt="Weather Icon" [style]="{'height' : '100px', 'width' : '100px'}">
+                <img class="weather-icon" [src]="dataService._iconUrl()" alt="Weather Icon" [style]="{'height' : '100px', 'width' : '100px'}">
               </div>
               <div class=" current-data flex flex-column justify-content-center align-items-center">
                 <div class="text-4xl">
-                  {{ dataService.name}}
+                  {{ dataService.cityName }}
                 </div>
               </div>
               @for(data of dataService.mainData; track data.label){
@@ -59,32 +57,95 @@
             </div>
           </p-card>
         </div>
-        <!-- <div class="card flex justify-content-center data-secondary">
-          <p-card header="Map">
-              <p class="m-0">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                  quas!
-              </p>
+      </div>
+
+      <div class="data-row">
+        <div class="card flex justify-content-center data-primary">
+          <p-card>
+            <div
+            class="text-2xl"
+            >
+              5-Day Forecast
+            </div>
+              <div class="forecast-container">
+                @for(data of dataService.dailyForecastData(); track data.dt){
+                  <div class="forecast flex flex-row">
+                    <div class="forecast-primary flex flex-column align-items-center">
+                      <div class="forecast-icon">
+                        <img class="weather-icon" [src]="dataService.setIconUrl(data.weather[0].icon)" alt="Weather Icon" [style]="{'height' : '100px', 'width' : '100px'}">
+                      </div>
+                      <div class="forecast-day">
+                        {{ data.dt_txt }}
+                      </div>
+                    </div>
+                    <div class="forecast-secondary flex flex-row flex-1 justify-content-evenly align-items-center">
+                      <div 
+                      class="current-data flex flex-column justify-content-center align-items-center"
+                      [style]="{'padding-top' : '20px', 'width' : '15%'}"
+                      >
+                        <div class="current-data-primary text-4xl">
+                          {{ data.main.temp }}<span>&#8451;</span>
+                          <div class="current-data-secondary flex justify-content-center"
+                          [style]="{'height' : '20px'}"
+                          >
+                            <small class="text-base">
+                              Temperature
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                      <div 
+                      class="current-data flex flex-column justify-content-center align-items-center"
+                      [style]="{'padding-top' : '20px'}"
+                      >
+                        <div class="current-data-primary text-4xl">
+                          {{ data.main.feels_like }}<span>&#8451;</span>
+                          <div class="current-data-secondary flex justify-content-center"
+                          [style]="{'height' : '20px'}"
+                          >
+                            <small class="text-base">
+                              Feels Like
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                      <div 
+                      class="current-data flex flex-column justify-content-center align-items-center"
+                      [style]="{'padding-top' : '20px'}"
+                      >
+                        <div class="current-data-primary text-4xl">
+                          {{ data.main.humidity }}<span>%</span>
+                          <div class="current-data-secondary flex justify-content-center"
+                          [style]="{'height' : '20px'}"
+                          >
+                            <small class="text-base">
+                              Humidity
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                      <div 
+                      class="current-data flex flex-column justify-content-center align-items-center"
+                      [style]="{'padding-top' : '20px'}"
+                      >
+                        <div class="current-data-primary text-4xl">
+                          {{ data.wind.speed }}<span>km/h</span>
+                          <div class="current-data-secondary flex justify-content-center"
+                          [style]="{'height' : '20px'}"
+                          >
+                            <small class="text-base">
+                              Wind Speed
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
           </p-card>
-        </div> -->
+        </div>
       </div>
     }
-    <div class="data-row">
-      <div class="card flex justify-content-center data-primary">
-        <p-card header="Overview">
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                quas!
-            </p>
-        </p-card>
-      </div>
-      <div class="card flex justify-content-center data-secondary">
-        <p-card header="Forecast">
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                quas!
-            </p>
-        </p-card>
-      </div>
-    </div>
+  </div>
 </div>

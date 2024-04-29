@@ -112,14 +112,33 @@ body{
     .time-display{
         display: none;
     }
+    .forecast-container{
+        .forecast{
+            flex-direction: column !important;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            margin: 10px 0;
+            .forecast-primary{
+                flex-direction: row !important;
+                justify-content: center !important;
+            }
+            .forecast-secondary{
+                margin-top: -20px !important;
+                flex-wrap: wrap;
+                .current-data{
+                    width: 50% !important;
+                }
+            }
+        }
+        
+    }
     .weather-header-right{
         width: 100%;
-        justify-content: space-evenly;
+        justify-content: center;
         .weather-input{
-            width: 70% !important;
-        }
-        .weather-lang{
-            width: 20% !important;
+            width: auto !important;
         }
     }
     .card-content{

@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MessageService } from 'primeng/api';
+import moment from 'moment';
 
 const weatherApi = environment.weatherApi;
 const apiKey = environment.apiKey;
@@ -82,6 +83,8 @@ export class DataService {
 
   // raw data (json)
   data = signal<weatherData[] | undefined>(undefined);
+  forecastData = signal<any>('');
+  dailyForecastData = signal<any>('');
   directGeocodeList = signal<directGeocodeObj[] | undefined>(undefined);
   directGeocode = signal<directGeocodeObj | undefined>(undefined);
   showGeocodeList : boolean = false;
@@ -91,6 +94,7 @@ export class DataService {
   userLat : number | undefined = undefined;
 
   // extracted data
+  cityName : string = '';
   // weather_id = signal<number | undefined>(undefined);
   // weather_main = signal<string>('');
   // weather_desc = signal<string>('');
@@ -140,7 +144,7 @@ export class DataService {
   timezone : number | undefined = undefined;
   id : number | undefined = undefined;
   name : string = '';
-  iconUrl = computed<string>(() => `${iconURL}${this.weather_icon()}@2x.png`);
+  _iconUrl = computed<string>(() => `${iconURL}${this.weather_icon()}@2x.png`);
   mainData : mainData[] = [];
 
   extractData() {
@@ -226,12 +230,31 @@ export class DataService {
     .subscribe({
       next(dataIn : any) {
         _self.data.set([dataIn]);
-        console.log(_self.data());
         _self.extractData();
-        _self.msgService.add({ severity: 'success', summary: 'Success Retrieving Weather Data', detail: 'Data Successfully Retrieved' });
+        // _self.msgService.add({ severity: 'success', summary: 'Success Retrieving Weather Data', detail: 'Data Successfully Retrieved' });
       },error(err : any) {
         console.log(err);
-        _self.msgService.add({ severity: 'warn', summary: 'Error Retrieving Weather Data', detail: err.message });
+        // _self.msgService.add({ severity: 'warn', summary: 'Error Retrieving Weather Data', detail: err.message });
+      }
+    });
+  }
+
+  fetchForecastData(lat: number, lon: number){
+    const _self = this;
+    this.http.get(`${forecastAPI}lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+    .subscribe({
+      next(dataIn : any) {
+        _self.forecastData.set(dataIn.list);
+        let res = dataIn.list.filter((data : any) => data.dt_txt.includes('00:00:00'));
+        let _res = res.map((data : any) => {
+          let dateWithoutTime = data.dt_txt.split(" ")[0];
+          let date = moment(dateWithoutTime);
+          data.dt_txt = date.format('dddd');
+        });
+        _self.dailyForecastData.set(res);
+        console.log('daily forecast data: ', _self.dailyForecastData() );
+      }, error(err : any) {
+        _self.msgService.add({ severity: 'warn', summary: 'Error Retrieving Forecast Data', detail: err.message });
       }
     });
   }
@@ -244,7 +267,6 @@ export class DataService {
       .subscribe({
         next(dataIn: any) {
           _self.directGeocodeList.set([]);
-          // _self.msgService.add({ severity: 'success', summary: 'Success', detail: 'Successfully Retrieved Direct Geocode' });
           dataIn.forEach((obj: any) => {
             let res : directGeocodeObj;
             if(obj.local_names){
@@ -267,14 +289,10 @@ export class DataService {
             }
             _self.directGeocodeList.update((list : any) => [...list, res]);
             _self.directGeocode.set(res);
-            // if(_self.directGeocodeList &&  _self.directGeocodeList()!.length > 1){
-            //   _self.showGeocodeList = true;
-            // } 
-            // else call get weather data for the only value in the list straight away
           });
-          console.log('directgecode', _self.directGeocode());
+          _self.cityName = _self.directGeocodeList()![0]?.name;
           _self.fetchWeatherData(_self.directGeocodeList()![0]?.lat, _self.directGeocodeList()![0]?.lon, 'metric', langCode);
-          console.log(_self.directGeocodeList());
+          _self.fetchForecastData(_self.directGeocodeList()![0]?.lat, _self.directGeocodeList()![0]?.lon);
         }, error(err: any) {
           console.log('Error retrieving location', err);
           _self.msgService.add({ severity: 'warn', summary: 'Error', detail: 'Error Retrieving Direct Geocode' });
@@ -304,5 +322,9 @@ export class DataService {
       });
       this.fetchWeatherData(this.userLon!, this.userLat!, 'metric', 'en');
     }
+  }
+
+  setIconUrl(icon : string){
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
   }
 }
